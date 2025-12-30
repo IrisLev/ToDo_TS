@@ -8,7 +8,6 @@
   ],
   "invalid": {
     "empty": "",
-    "spaces": "   ",
-    "long": "qwqwertyuiop sdfghjkl; zxcvbnm,. sdfghjk,l.; kjguyrtyiuuty m;olmupioufcrtr htgfrjuytrulihylih jfjyhtgfdjuytoyug"
+    "spaces": "   "
   }
 }

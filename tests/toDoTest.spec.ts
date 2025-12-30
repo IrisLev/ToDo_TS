@@ -19,7 +19,7 @@ test('Empty state', async () => {
   await expect(thePage.howToAddItem).toBeVisible();
   await expect(thePage.toDoListFilters).not.toBeVisible();
 });
-test.describe('Add a new item', () => {
+test.describe('Positive tests for adding an item', () => {
   test('Add item to an empty list', async ({ page }) => {
     const task = 'Feed the cats';
     await thePage.addListItem('Feed the cats');
@@ -38,4 +38,12 @@ test.describe('Add a new item', () => {
       await expect(thePage.toDoList).toContainText(task);
     }
   });
+});
+test.describe('Negative tests for adding an item', () => {
+  for (const [name, task] of Object.entries(todoCases.invalid)) {
+    test(`Negative test with: ${name}`, async ({}) => {
+      await thePage.addListItem(task);
+      await expect(thePage.toDoList).toBeEmpty();
+    });
+  }
 });
