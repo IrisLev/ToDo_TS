@@ -1,0 +1,14 @@
+{
+  "valid": [
+    "Clean cat litter",
+    "Купить 3 упаковки туны",
+    "להתקשר 0541234567",
+    "მისამართი: (+995 32) 236 72 10, ცხელი ხაზი: (+995 32) 260 11 60 ",
+    "Find 👩‍🎓👨‍🎓👨‍🍳"
+  ],
+  "invalid": {
+    "empty": "",
+    "spaces": "   ",
+    "long": "qwqwertyuiop sdfghjkl; zxcvbnm,. sdfghjk,l.; kjguyrtyiuuty m;olmupioufcrtr htgfrjuytrulihylih jfjyhtgfdjuytoyug"
+  }
+}
