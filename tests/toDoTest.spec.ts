@@ -2,10 +2,6 @@ import { test, expect } from '@playwright/test';
 import { ToDoListPage } from '../pages/toDoListPage';
 import todoCases from '../data/input_items.json';
 
-type ToDoCase = {
-  text: string;
-};
-
 let thePage: ToDoListPage;
 
 test.beforeEach(async ({ page }) => {
@@ -19,11 +15,12 @@ test('Empty state', async () => {
   await expect(thePage.howToAddItem).toBeVisible();
   await expect(thePage.toDoListFilters).not.toBeVisible();
 });
-test.describe('Positive tests for adding an item', () => {
-  test('Add item to an empty list', async ({ page }) => {
+test.describe('Positive tests for one item', () => {
+  test('Footer added on adding a first item', async ({ page }) => {
     const task = 'Feed the cats';
     await thePage.addListItem('Feed the cats');
     await expect(thePage.toDoList).toContainText(task);
+    await expect(thePage.toDoListItem).toHaveCount(1);
     await expect(thePage.toDoListFilters).toBeVisible();
     await expect(thePage.footeritemsCount).toBeVisible();
     await expect(thePage.footerClearCompleted).toBeVisible();
@@ -31,6 +28,19 @@ test.describe('Positive tests for adding an item', () => {
     await expect(thePage.footerFilterAll).toHaveClass('selected');
     await expect(thePage.footerFilterActive).not.toHaveClass('selected');
     await expect(thePage.footerFilterCompleted).not.toHaveClass('selected');
+    await expect(thePage.itemDestroyButton).not.toBeVisible();
+    await expect(thePage.itemCheckBox).toBeVisible();
+    await thePage.toDoListItem.hover();
+    await expect(thePage.toDoListItem).toBeVisible();
+  });
+  test('Footer gone after deleting the last item', async () => {
+    const task = 'Feed the cats';
+    await thePage.addListItem('Feed the cats');
+    await expect(thePage.toDoList).toContainText(task);
+    await thePage.toDoListItem.hover();
+    await thePage.itemDestroyButton.click();
+    await expect(thePage.toDoList).toBeEmpty();
+    await expect(thePage.footer).not.toBeVisible();
   });
   test('Bunch of valid inputs', async ({ page }) => {
     for (const task of todoCases.valid) {
@@ -46,4 +56,45 @@ test.describe('Negative tests for adding an item', () => {
       await expect(thePage.toDoList).toBeEmpty();
     });
   }
+});
+test.describe('Multiple items tests', () => {
+  test.beforeEach(async ({}) => {
+    await thePage.addListItem('Feed the cats');
+    await thePage.addListItem('Feed the cats');
+    await thePage.addListItem('Feed the cats');
+    await thePage.addListItem('Clean the litter');
+    await thePage.addListItem('Play with the cats');
+  });
+  test('Verify identical toDos count', async ({}) => {
+    const sameTextItems = thePage.toDoListItem.filter({ hasText: 'Feed the cats' });
+    await expect(sameTextItems).toHaveCount(3);
+  });
+  test('Test: UI changes upon task completion', async ({}) => {
+    const sameTextItems = thePage.toDoListItem.filter({ hasText: 'Feed the cats' });
+    await sameTextItems.nth(0).getByTestId('todo-item-toggle').click();
+    await thePage.getToDoItemByTask('Clean the litter').getByTestId('todo-item-toggle').click();
+    await expect(sameTextItems.nth(0)).toHaveClass('completed');
+    await expect(thePage.getToDoItemByTask('Clean the litter')).toHaveClass('completed');
+    await expect(thePage.footeritemsCount).toHaveText('3 items left!');
+  });
+  test('Apply filter: Active', async ({}) => {
+    const sameTextItems = thePage.toDoListItem.filter({ hasText: 'Feed the cats' });
+    await sameTextItems.nth(0).getByTestId('todo-item-toggle').click();
+    await thePage.getToDoItemByTask('Clean the litter').getByTestId('todo-item-toggle').click();
+    await thePage.footerFilterActive.click();
+    await expect(sameTextItems).toHaveCount(2);
+    await expect(thePage.toDoListItem).toHaveCount(3);
+    await expect(thePage.getToDoItemByTask('Play with the cats')).toBeVisible();
+    await expect(thePage.footeritemsCount).toHaveText('3 items left!');
+  });
+  test('Apply filter "Completed"', async ({}) => {
+    // const sameTextItems = thePage.toDoListItem.filter({ hasText: 'Feed the cats' });
+    // await sameTextItems.nth(0).getByTestId('todo-item-toggle').click();
+    // await thePage.getToDoItemByTask('Clean the litter').getByTestId('todo-item-toggle').click();
+    // await thePage.footerFilterCompleted.click();
+    await thePage.checkItemsCompleted();
+    //await expect(thePage.toDoListItem).toHaveCount(2);
+    // await expect(thePage.getToDoItemByTask('Clean the litter'));
+    //await expect(thePage.getToDoItemByTask('Feed the cats'));
+  });
 });

@@ -1,0 +1,5 @@
+In the test file, write test that clicks :
+1. "Active filter"
+2. Completed filter
+3. Clear Completed
+4. Add a new item to a list that has some completed tasks and verify the new one isn't marked as completed or something
