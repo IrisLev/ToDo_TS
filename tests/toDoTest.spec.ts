@@ -75,7 +75,7 @@ test.describe('Multiple items tests', () => {
     await thePage.getToDoItemByTask('Clean the litter').getByTestId('todo-item-toggle').click();
     await expect(sameTextItems.nth(0)).toHaveClass('completed');
     await expect(thePage.getToDoItemByTask('Clean the litter')).toHaveClass('completed');
-    await expect(thePage.footeritemsCount).toHaveText('3 items left!');
+    await thePage.itemsCounter(3);
   });
   test('Apply filter: Active', async ({}) => {
     const sameTextItems = thePage.toDoListItem.filter({ hasText: 'Feed the cats' });
@@ -85,16 +85,16 @@ test.describe('Multiple items tests', () => {
     await expect(sameTextItems).toHaveCount(2);
     await expect(thePage.toDoListItem).toHaveCount(3);
     await expect(thePage.getToDoItemByTask('Play with the cats')).toBeVisible();
-    await expect(thePage.footeritemsCount).toHaveText('3 items left!');
+    await thePage.itemsCounter(3);
   });
   test('Apply filter "Completed"', async ({}) => {
-    // const sameTextItems = thePage.toDoListItem.filter({ hasText: 'Feed the cats' });
-    // await sameTextItems.nth(0).getByTestId('todo-item-toggle').click();
-    // await thePage.getToDoItemByTask('Clean the litter').getByTestId('todo-item-toggle').click();
-    // await thePage.footerFilterCompleted.click();
-    await thePage.checkItemsCompleted();
-    //await expect(thePage.toDoListItem).toHaveCount(2);
-    // await expect(thePage.getToDoItemByTask('Clean the litter'));
-    //await expect(thePage.getToDoItemByTask('Feed the cats'));
+    const sameTextItems = thePage.getToDoItemByTask('Feed the cats');
+    await thePage.completeToDo('Clean the litter');
+    await thePage.completeToDo('Feed the cats');
+    await thePage.footerFilterCompleted.click();
+    await thePage.itemsCounter(3);
+    await expect(thePage.toDoListItem).toHaveCount(2);
+    await expect(sameTextItems.nth(0)).toHaveClass('completed');
+    await expect(thePage.getToDoItemByTask('Clean the litter')).toHaveClass('completed');
   });
 });

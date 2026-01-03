@@ -3,3 +3,9 @@ In the test file, write test that clicks :
 2. Completed filter
 3. Clear Completed
 4. Add a new item to a list that has some completed tasks and verify the new one isn't marked as completed or something
+
+
+
+STATUS:
+Need to finish the test: test('Apply filter "Completed"', async ({}) => {
+    And also refactor the previous tests according to the new methods in the Page file

@@ -1,4 +1,4 @@
-import { Page, Locator } from '@playwright/test';
+import { Page, Locator, expect } from '@playwright/test';
 
 export class ToDoListPage {
   readonly page: Page;
@@ -25,7 +25,7 @@ export class ToDoListPage {
     this.toDoListFilters = this.page.getByTestId('footer');
     this.listTitle = this.page.getByTestId('header');
     this.howToAddItem = this.page.locator('.info', { hasText: 'Double-click to edit a todo' });
-    this.footeritemsCount = this.page.getByTestId('footer').locator('.todo-count');
+    this.footeritemsCount = this.page.getByTestId('footer').locator('.todo-count'); /////////
     this.footerClearCompleted = this.toDoListFilters.getByRole('button', {
       name: 'Clear completed',
     });
@@ -47,8 +47,12 @@ export class ToDoListPage {
   getToDoItemByTask(task: string) {
     return this.toDoListItem.filter({ hasText: task });
   }
-  async checkItemsCompleted() {
-    await this.getToDoItemByTask('Feed the cats').nth(0).getByTestId('todo-item-toggle').click();
-    await this.getToDoItemByTask('Clean the litter').getByTestId('todo-item-toggle').click();
+  async completeToDo(task: string, index = 0) {
+    await this.getToDoItemByTask(task).nth(index).getByTestId('todo-item-toggle').click();
+  }
+  async itemsCounter(count: number) {
+    await expect(this.page.getByTestId('footer').locator('.todo-count')).toHaveText(
+      `${count} items left!`,
+    );
   }
 }
