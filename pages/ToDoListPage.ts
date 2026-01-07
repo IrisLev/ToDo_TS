@@ -55,4 +55,7 @@ export class ToDoListPage {
       `${count} items left!`,
     );
   }
+  async removeCompletedTasks() {
+    await this.footerClearCompleted.click();
+  }
 }

@@ -1,11 +1,14 @@
 In the test file, write test that clicks :
+
 1. "Active filter"
 2. Completed filter
 3. Clear Completed
 4. Add a new item to a list that has some completed tasks and verify the new one isn't marked as completed or something
 
+TBD: add tests
 
-
-STATUS:
-Need to finish the test: test('Apply filter "Completed"', async ({}) => {
-    And also refactor the previous tests according to the new methods in the Page file
+1. Un-complete 1 item (preset: add 5, complete 2 , click completed) ///DONE
+2. Preset: the previous test, then click Active ///DONE
+3.Preset: The previous test, then click All //redundant
+4. Preset: only the beforeTest, then click "Clear completed" and verify the completed tasks are nowehere to be found
+5. Preset: the previous test, then click Completed, verify it's empty

@@ -97,4 +97,59 @@ test.describe('Multiple items tests', () => {
     await expect(sameTextItems.nth(0)).toHaveClass('completed');
     await expect(thePage.getToDoItemByTask('Clean the litter')).toHaveClass('completed');
   });
+  test('Test the results of un-completing a task', async ({}) => {
+    const sameTextItems = thePage.getToDoItemByTask('Feed the cats');
+    await thePage.completeToDo('Clean the litter');
+    await thePage.completeToDo('Feed the cats');
+    await thePage.footerFilterCompleted.click();
+    await thePage.completeToDo('Feed the cats');
+    await expect(thePage.toDoListItem).toHaveCount(1);
+    await expect(thePage.toDoListItem).toContainText('Clean the litter');
+    await thePage.itemsCounter(4);
+    await expect(thePage.getToDoItemByTask('Clean the litter')).toHaveClass('completed');
+  });
+  test('Test the Active filter', async ({}) => {
+    const sameTextItems = thePage.getToDoItemByTask('Feed the cats');
+    await thePage.completeToDo('Clean the litter');
+    await thePage.completeToDo('Feed the cats');
+    await thePage.footerFilterCompleted.click();
+    await thePage.completeToDo('Feed the cats');
+    await thePage.footerFilterActive.click();
+    await thePage.itemsCounter(4);
+    await expect(thePage.toDoListItem).toHaveCount(4);
+    await expect(sameTextItems).toHaveCount(3);
+    await expect(thePage.toDoList).toContainText('Play with the cats');
+    await expect(thePage.toDoListItem.locator('li.completed')).toHaveCount(0);
+  });
+  test('Clicking Clear Completed removes a task from the All list', async ({}) => {
+    const sameTextItems = thePage.getToDoItemByTask('Feed the cats');
+    await thePage.completeToDo('Clean the litter');
+    await thePage.completeToDo('Feed the cats');
+    await thePage.removeCompletedTasks();
+
+    await thePage.itemsCounter(3);
+    await expect(sameTextItems).toHaveCount(2);
+    await expect(thePage.toDoList).toContainText('Play with the cats');
+    await expect(thePage.toDoListItem).toHaveCount(3);
+  });
+  test('Clicking Clear Completed removes a task from the Active list', async ({}) => {
+    const sameTextItems = thePage.getToDoItemByTask('Feed the cats');
+    await thePage.completeToDo('Clean the litter');
+    await thePage.completeToDo('Feed the cats');
+    await thePage.removeCompletedTasks();
+    await thePage.footerFilterActive.click();
+    await thePage.itemsCounter(3);
+    await expect(sameTextItems).toHaveCount(2);
+    await expect(thePage.toDoList).toContainText('Play with the cats');
+    await expect(thePage.toDoListItem).toHaveCount(3);
+  });
+  test('Clicking Clear Completed removes a task from the Completed list', async ({}) => {
+    const sameTextItems = thePage.getToDoItemByTask('Feed the cats');
+    await thePage.completeToDo('Clean the litter');
+    await thePage.completeToDo('Feed the cats');
+    await thePage.removeCompletedTasks();
+    await thePage.footerFilterCompleted.click();
+    await thePage.itemsCounter(3);
+    await expect(thePage.toDoListItem).toHaveCount(0);
+  });
 });
